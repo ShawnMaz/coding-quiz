@@ -30,8 +30,8 @@ header {
 }
 /* header style ends */
 
-/* introduction page style starts */
-.intro-page {
+/* page style starts */
+.page {
     display: flex;
     width: 50%;
     height: 500px;
@@ -41,24 +41,83 @@ header {
     justify-content: center;
 }
 
-.intro-page p {
+.page p {
     text-align: center;
     margin: 20px 0;
 }
 
-.intro-page button {
+.page button {
     background-color: var(--quartery-colour);
     font-size: 20px;
     padding: 10px;
     border: none;
     border-radius: 10px;
 }
-/* intrduction page style ends */
+
+.page ul{
+    list-style: none;
+}
+
+.page ul li button {
+    margin: 10px;
+}
+
+.page button:hover {
+    opacity: 50%;
+}
+
+.page h3 {
+    margin: 10px;
+    color: var(--secondary-colour);
+}
+
+.page div {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;   
+}
+
+.page div label {
+    padding: 5px 0;
+}
+
+.page div input {
+    margin-bottom: 5px;
+    border:2px solid var(--tertiary-colour);
+    border-radius: 4px;
+    font-size: 20px;
+    text-align: center;
+    
+}
+
+.result {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    border-top: 2px solid var(--tertiary-colour);
+}
+
+.result span {
+    background-color: var(--tertiary-colour);
+    padding: 20px;
+    margin: 10px 5px;
+    border-radius: 10px;
+}
+/* page style ends */
 
 @media screen and (max-width: 768px) {
     /* introduction page style starts */
-    .intro-page{
+    .page{
         width: 85%;
+    }
+    /* introduction page style ends */
+}
+
+@media screen and (max-width: 576px) {
+    /* introduction page style starts */
+    .page {
+        height: 100%;
+        margin-top: 20px;
     }
     /* introduction page style ends */
 }
