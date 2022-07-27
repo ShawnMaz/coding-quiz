@@ -77,19 +77,6 @@ header {
     align-items: center;   
 }
 
-.page div label {
-    padding: 5px 0;
-}
-
-.page div input {
-    margin-bottom: 5px;
-    border:2px solid var(--tertiary-colour);
-    border-radius: 4px;
-    font-size: 20px;
-    text-align: center;
-    
-}
-
 .result {
     display: flex;
     flex-wrap: wrap;
@@ -103,6 +90,42 @@ header {
     margin: 10px 5px;
     border-radius: 10px;
 }
+
+.score-submission label {
+    padding: 5px 0;
+}
+
+.score-submission input {
+    margin-bottom: 5px;
+    border:2px solid var(--tertiary-colour);
+    border-radius: 4px;
+    font-size: 20px;
+    text-align: center;
+    
+}
+
+.page ul {
+    margin: 10px;
+    font-size: 20px;
+    list-style: none;
+}
+
+.page ul li {
+    margin: 5px;
+    padding: 2px 100px;
+    background-color: var(--secondary-colour);
+    color: var(--primary-colour); 
+    /* border-radius: 5px;    */
+}
+
+.page .high-score {
+    flex-direction: row;
+}
+
+.page .high-score button {
+    margin: 10px;
+}
+
 /* page style ends */
 
 @media screen and (max-width: 768px) {
