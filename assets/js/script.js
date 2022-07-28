@@ -67,27 +67,27 @@ var userMark = []; // stores user score for each questions
 
 var timer = quizContent.length * timePerQuestion;
 
-var score = [];
+var score = []; 
 
-
-var clearPage = function(){
-    document.querySelector(".page").remove();
-};
-
+// This function puts the timer in the header
 var changeHeaderToTimer = function(){
     headerEl.textContent = `Time: ${timer}`;
 };
 
+// This function puts the `View High Score` link in the header
 var changeHeaderToViewHighScore = function(){
     headerEl.textContent = "View High Score";
 };
 
+// This function deletes the old section element and create a new one for the 
+// new page
 var clearSectionEl = function(){
     mainEl.children[0].remove();
     sectionEl = document.createElement("section");
     sectionEl.className = "page";
 };
 
+// This functions creates the questions and choices presented once the quiz starts
 var createQuestionAndChoices = function(){
     // create the question
     var questionEl = document.createElement("h2");
@@ -109,6 +109,9 @@ var createQuestionAndChoices = function(){
     sectionEl.appendChild(multipleChoiceEl);
 };
 
+// This fuction creates the results panel at the bottom of the quiz
+// and the score submission page. It shows which question the user got right
+// or wrong
 var createResults = function(){
     // create the results
     var resultsEl = document.createElement("h3");
@@ -119,6 +122,7 @@ var createResults = function(){
     for (var i = 0; i < quizContent.length; i++){
         var spanEl = document.createElement("span");
         spanEl.textContent = `Q${i+1}`;
+        // Apply the right color based on the user's correct or incorrect response
         if(userMark.length > 0){
             if(userMark[i]){
                 if(userMark[i] === "correct"){
@@ -135,6 +139,7 @@ var createResults = function(){
     sectionEl.appendChild(resultsInfoContainerEl);
 };
 
+// This function creates the quiz by calling all the other helper functions
 var createQuiz = function(){ 
 
     createQuestionAndChoices();
@@ -144,6 +149,8 @@ var createQuiz = function(){
     mainEl.appendChild(sectionEl);
 };
 
+// This function checks the user answers and marks te responses as correct or incorrect
+// It also applies penaly of -10 seconds for an incorrect response
 var checkAnswer = function(userResponse){
     if (userResponse === quizContent[questionNumber].answer){
         userMark.push("correct");
@@ -153,16 +160,22 @@ var checkAnswer = function(userResponse){
     }
 };
 
-var createScoreSubmissionPage = function(){
+// This function creates the score submission page
+var createScoreSubmissionPage = function(){    
     changeHeaderToViewHighScore();
+
+    // create page header
     var headerEl = document.createElement("h2");
     headerEl.textContent = "All done";
     sectionEl.appendChild(headerEl);
 
+    // Creates the paragraph that display's the user score after the quiz
     var scoreEl = document.createElement("p");
     scoreEl.textContent = `Your score is ${timer} points.`;
     sectionEl.appendChild(scoreEl);
 
+    // Creates the div element that contains the input box for the initial
+    // and the save score button
     var divEl = document.createElement("div");
     divEl.className = "score-submission";
     var labelEl = document.createElement("label");
@@ -180,13 +193,19 @@ var createScoreSubmissionPage = function(){
     divEl.appendChild(btnEl);
     sectionEl.appendChild(divEl);
 
+    // Creates the results panels at the bottom of the page
     createResults();
 
     mainEl.appendChild(sectionEl);
 };
 
+// Decalring a start timer variable globally so that it is accessible everywhere
 var startTimer;
 
+// This function removes time from the timer as long as time is above 0
+// and will change the header from `View High Score` to show the timer.
+// Once the time reaches 0, it will change the header back to `View High Score`
+// and stop the timer and take the user to the score submission page.
 var quizTimer = function(){    
     if(timer>0){
         timer--;
@@ -199,6 +218,8 @@ var quizTimer = function(){
     }
 };
 
+// This function reads scores saved in the browser's localStorage and
+// stores it into an array
 var readSavedScores = function(){
     if(!JSON.parse(localStorage.getItem('highScores'))){
         score = [];
@@ -207,6 +228,7 @@ var readSavedScores = function(){
     }
 };
 
+// This function sorts the scores stored in the array from highest to lowest
 var sortHighScores = function(){    
     var scoreData = {
         name:score[0].name,
@@ -224,6 +246,9 @@ var sortHighScores = function(){
     }    
 }
 
+// This function calls the function to read scores from the browser's local storage
+// and then adds the user's current score to the array. It then calls the function
+// to sort the array and then it saves the array full of scores to the localStorage
 var saveUserScore = function(){
     readSavedScores();
     var userScore = document.querySelector("input[name='score']");
@@ -237,16 +262,22 @@ var saveUserScore = function(){
     localStorage.setItem('highScores', JSON.stringify(score));
 };
 
+// This function creates the High Score page
 var createHighScoresPage = function(){
+    // Create the page title
     var titleEl = document.createElement("h2");
     titleEl.textContent = "High Scores";
     sectionEl.appendChild(titleEl);
 
+    // Creates the unordered list
     var scoreUlEl = document.createElement("ul")
     sectionEl.className = "page high-score-list";
     readSavedScores();
     sortHighScores();
 
+    // checking to see if there are any previous scores available.
+    // If there are none it will say no high scores.
+    // If there are previous high scores that it will show a maximum of 10 high scores
     if(score.length === 0){
         var scoreLiEl = document.createElement("li");
         scoreLiEl.textContent = "No saved high scores";
@@ -259,10 +290,11 @@ var createHighScoresPage = function(){
             scoreLiEl.textContent = `${i+1}. ${score[i].name} ----> ${score[i].points}`;
             scoreUlEl.appendChild(scoreLiEl);        
         }
-    }
-    
+    }    
     sectionEl.appendChild(scoreUlEl);
 
+    // creates the div element that contains the buttons to go back home and clear 
+    // the high score list stored in the browser
     var scoreDivEl = document.createElement("div");
     scoreDivEl.className = "high-score";
     var homeButtonEl = document.createElement("button");
@@ -278,16 +310,25 @@ var createHighScoresPage = function(){
     mainEl.appendChild(sectionEl);
 };
 
+// When the clear high score button in the high score is pressed,
+// this function triggers and clears the page and shows the user that there 
+// are no high scores to show
 var clearHighScores = function(){
+    // resets the scores array in the program
     score = [];
+
+    // creates the page title
     var titleEl = document.createElement("h2");
     titleEl.textContent = "High scores";
     sectionEl.appendChild(titleEl);
 
+    // creates the paragraph that says non sscore to shw
     var paragraphEl = document.createElement("p");
     paragraphEl.textContent = "No Scores to show";
     sectionEl.appendChild(paragraphEl);
 
+    // creates the div element that contains the buttons to go back home and clear 
+    // the high score list stored in the browser
     var scoreDivEl = document.createElement("div");
     scoreDivEl.className = "high-score";
     var homeButtonEl = document.createElement("button");
@@ -303,15 +344,19 @@ var clearHighScores = function(){
     mainEl.appendChild(sectionEl);
 };
 
+// This function creates the home page 
 var createHomePage = function(){
+    // creates page title
     var titleEl = document.createElement("h1");
     titleEl.textContent = "Coding Quiz";
     sectionEl.appendChild(titleEl);
 
+    // creates quiz instructions paragraph
     var paragraphEl = document.createElement("p");
     paragraphEl.textContent = "Try to answer the following code-realted questions within the time limit. keep in mind that incorrect answers will penalize your score/time by ten seconds!";
     sectionEl.appendChild(paragraphEl);
 
+    // creates the start quiz button
     var buttonEl = document.createElement("button");
     buttonEl.textContent = "Start Quiz";
     buttonEl.setAttribute("id", "start-quiz");
@@ -319,43 +364,73 @@ var createHomePage = function(){
 
     mainEl.appendChild(sectionEl);
 }
-    
+
+// This function determines which click event will take you where and 
+// calls the required helper functions to create the correct page
 var quiz = function(event){    
     var buttonClick = event.target;
+
+    // starts the quiz from the main page
     if(buttonClick.matches("#start-quiz")){
         timer = quizContent.length * timePerQuestion;
         // start timer
         startTimer = setInterval(quizTimer, 1000);
 
         //remove main page
-        // clearPage();
         clearSectionEl();       
 
         //create quiz page
         createQuiz();
-        
+    
+        // once the quiz has started this condition is checked.
     }else if(buttonClick.matches(".question-options")){
+        // check users answer to the quiz qustion
         checkAnswer(event.target.textContent);
+
+        // increment the question number so that createQuiz() will go to the next question
         questionNumber++;
+
+        // new questions will be shown if there are still more questions left
+        // and the there is still time left
         if((questionNumber < quizContent.length) && timer > 0){
             clearSectionEl();
             createQuiz();
+
+            // if there are no questions or time left, then the score submission
+            // page will be shown
         }else{
             clearSectionEl();
+            // stopping the timer for when the user completes the quiz 
+            // before the timer reaches 0.
             clearInterval(startTimer);
             createScoreSubmissionPage();
+
+            // reset the question to 0 for when the user wants to restart the quiz
+            // it will start from the beginning again.
             questionNumber = 0;
-        }        
+        }
+        // In the score submission page if the user clicks on the submit score button
+        // then the follwin code triggers        
     }else if(buttonClick.matches("#submit-score")){
         saveUserScore();
         clearSectionEl();
         createHighScoresPage();
+
+        // resetting the userMark to remove data from the user's last quiz.
         userMark = [];
+
+        // for the clear score button in the High Score page
     }else if(buttonClick.matches("#clear-score")){
         clearSectionEl();
+
+        // clears saved data in the crowser's local storage
         localStorage.clear();
+
+        // resets the score[] which has a history of the high scores
         score = [];
         clearHighScores();
+
+        // for the home button in the High Score Page
     }else if(buttonClick.matches("#home")){
         clearSectionEl();
         createHomePage();
@@ -363,13 +438,17 @@ var quiz = function(event){
     
 };
 
+// listening click events on the main element in the body
 mainEl.addEventListener("click", quiz);
 
+// This function checkes what was clicked in the header element
 var headerHighScorePageNavigation = function(event){
     var buttonClick = event.target;
     if(buttonClick.matches("#header-element")){
         if (score.length === 0){
             clearSectionEl();
+            // when the element is clicked but there is no high score to show,
+            // it will show you the empty High score page
             clearHighScores();
         }else{
             clearSectionEl();
@@ -379,4 +458,6 @@ var headerHighScorePageNavigation = function(event){
 };
 
 var headerHighScoreEl = document.querySelector("header");
+
+// listening to the click events in the header section
 headerHighScoreEl.addEventListener("click", headerHighScorePageNavigation);
