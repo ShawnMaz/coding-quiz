@@ -67,6 +67,8 @@ var userMark = []; // stores user score for each questions
 
 var timer = quizContent.length * timePerQuestion;
 
+var score = [];
+
 
 var clearPage = function(){
     document.querySelector(".page").remove();
@@ -158,7 +160,7 @@ var createScoreSubmissionPage = function(){
     sectionEl.appendChild(headerEl);
 
     var scoreEl = document.createElement("p");
-    scoreEl.textContent = "Your score is ";
+    scoreEl.textContent = `Your score is ${timer} points.`;
     sectionEl.appendChild(scoreEl);
 
     var divEl = document.createElement("div");
@@ -196,21 +198,143 @@ var quizTimer = function(){
         createScoreSubmissionPage();
     }
 };
+
+var readSavedScores = function(){
+    if(!JSON.parse(localStorage.getItem('highScores'))){
+        score = [];
+    } else {
+        score = JSON.parse(localStorage.getItem('highScores'));
+    }
+};
+
+var sortHighScores = function(){    
+    var scoreData = {
+        name:score[0].name,
+        points:score[0].points
+    }
+    for(var i = 0; i < score.length; i++){
+        if(score[i].points > scoreData.points){
+            scoreData.name = score[i].name;
+            scoreData.points = score[i].points;
+
+            score.splice(i, 1);
+
+            score.unshift(scoreData);
+        }
+    }    
+}
+
+var saveUserScore = function(){
+    readSavedScores();
+    var userScore = document.querySelector("input[name='score']");
+    var userScoreData = {
+        name: userScore.value,
+        points: timer
+    }
+    userScore.value = "";
+    score.push(userScoreData);
+    sortHighScores();
+    localStorage.setItem('highScores', JSON.stringify(score));
+};
+
+var createHighScoresPage = function(){
+    var titleEl = document.createElement("h2");
+    titleEl.textContent = "High Scores";
+    sectionEl.appendChild(titleEl);
+
+    var scoreUlEl = document.createElement("ul")
+    sectionEl.className = "page high-score-list";
+    readSavedScores();
+    sortHighScores();
+
+    if(score.length === 0){
+        var scoreLiEl = document.createElement("li");
+        scoreLiEl.textContent = "No saved high scores";
+    } else{
+        for (var i = 0; i < score.length; i++){
+            if(i > 9){
+                break;
+            }
+            var scoreLiEl = document.createElement("li");
+            scoreLiEl.textContent = `${i+1}. ${score[i].name} ----> ${score[i].points}`;
+            scoreUlEl.appendChild(scoreLiEl);        
+        }
+    }
+    
+    sectionEl.appendChild(scoreUlEl);
+
+    var scoreDivEl = document.createElement("div");
+    scoreDivEl.className = "high-score";
+    var homeButtonEl = document.createElement("button");
+    homeButtonEl.setAttribute("id", "home");
+    homeButtonEl.textContent = "Home";
+    scoreDivEl.appendChild(homeButtonEl);
+    var clearScoreButtonEl = document.createElement("button");
+    clearScoreButtonEl.setAttribute("id", "clear-score");
+    clearScoreButtonEl.textContent = "Clear Score";
+    scoreDivEl.appendChild(clearScoreButtonEl);
+    sectionEl.appendChild(scoreDivEl);
+
+    mainEl.appendChild(sectionEl);
+};
+
+var clearHighScores = function(){
+    score = [];
+    var titleEl = document.createElement("h2");
+    titleEl.textContent = "High scores";
+    sectionEl.appendChild(titleEl);
+
+    var paragraphEl = document.createElement("p");
+    paragraphEl.textContent = "No Scores to show";
+    sectionEl.appendChild(paragraphEl);
+
+    var scoreDivEl = document.createElement("div");
+    scoreDivEl.className = "high-score";
+    var homeButtonEl = document.createElement("button");
+    homeButtonEl.setAttribute("id", "home");
+    homeButtonEl.textContent = "Home";
+    scoreDivEl.appendChild(homeButtonEl);
+    var clearScoreButtonEl = document.createElement("button");
+    clearScoreButtonEl.setAttribute("id", "clear-score");
+    clearScoreButtonEl.textContent = "Clear Score";
+    scoreDivEl.appendChild(clearScoreButtonEl);
+    sectionEl.appendChild(scoreDivEl);
+
+    mainEl.appendChild(sectionEl);
+};
+
+var createHomePage = function(){
+    var titleEl = document.createElement("h1");
+    titleEl.textContent = "Coding Quiz";
+    sectionEl.appendChild(titleEl);
+
+    var paragraphEl = document.createElement("p");
+    paragraphEl.textContent = "Try to answer the following code-realted questions within the time limit. keep in mind that incorrect answers will penalize your score/time by ten seconds!";
+    sectionEl.appendChild(paragraphEl);
+
+    var buttonEl = document.createElement("button");
+    buttonEl.textContent = "Start Quiz";
+    buttonEl.setAttribute("id", "start-quiz");
+    sectionEl.appendChild(buttonEl);
+
+    mainEl.appendChild(sectionEl);
+}
     
 var quiz = function(event){    
-    
-    if(event.target.matches("#start-quiz")){
+    var buttonClick = event.target;
+    if(buttonClick.matches("#start-quiz")){
         timer = quizContent.length * timePerQuestion;
         // start timer
         startTimer = setInterval(quizTimer, 1000);
 
         //remove main page
-        clearPage();       
+        // clearPage();
+        clearSectionEl();       
 
         //create quiz page
         createQuiz();
         
-    }else if(event.target.matches(".question-options")){
+    }else if(buttonClick.matches(".question-options")){
         checkAnswer(event.target.textContent);
         questionNumber++;
         if((questionNumber < quizContent.length) && timer > 0){
@@ -219,12 +343,40 @@ var quiz = function(event){
         }else{
             clearSectionEl();
             clearInterval(startTimer);
-            console.log(timer);
             createScoreSubmissionPage();
-        }
-        
-    }   
+            questionNumber = 0;
+        }        
+    }else if(buttonClick.matches("#submit-score")){
+        saveUserScore();
+        clearSectionEl();
+        createHighScoresPage();
+        userMark = [];
+    }else if(buttonClick.matches("#clear-score")){
+        clearSectionEl();
+        localStorage.clear();
+        score = [];
+        clearHighScores();
+    }else if(buttonClick.matches("#home")){
+        clearSectionEl();
+        createHomePage();
+    }  
     
 };
 
 mainEl.addEventListener("click", quiz);
+
+var headerHighScorePageNavigation = function(event){
+    var buttonClick = event.target;
+    if(buttonClick.matches("#header-element")){
+        if (score.length === 0){
+            clearSectionEl();
+            clearHighScores();
+        }else{
+            clearSectionEl();
+            createHighScoresPage();
+        }
+    }
+};
+
+var headerHighScoreEl = document.querySelector("header");
+headerHighScoreEl.addEventListener("click", headerHighScorePageNavigation);
