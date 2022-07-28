@@ -56,10 +56,13 @@ header {
 
 .page ul{
     list-style: none;
+    width: 100%;
+    margin-top: 15px;
 }
 
 .page ul li button {
     margin: 10px;
+    width: 100%;
 }
 
 .page button:hover {
@@ -77,25 +80,26 @@ header {
     align-items: center;   
 }
 
-.result {
+.page .result {
     display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
     border-top: 2px solid var(--tertiary-colour);
 }
 
-.result span {
+.page .result span {
     background-color: var(--tertiary-colour);
     padding: 20px;
     margin: 10px 5px;
     border-radius: 10px;
 }
 
-.score-submission label {
+.page .score-submission label {
     padding: 5px 0;
 }
 
-.score-submission input {
+.page .score-submission input {
     margin-bottom: 5px;
     border:2px solid var(--tertiary-colour);
     border-radius: 4px;
@@ -104,22 +108,21 @@ header {
     
 }
 
-.page ul {
+.page .high-score {
+    flex-direction: row;
+}
+
+.page .high-score ul {
     margin: 10px;
     font-size: 20px;
     list-style: none;
 }
 
-.page ul li {
+.page .high-score ul li {
     margin: 5px;
     padding: 2px 100px;
     background-color: var(--secondary-colour);
     color: var(--primary-colour); 
-    /* border-radius: 5px;    */
-}
-
-.page .high-score {
-    flex-direction: row;
 }
 
 .page .high-score button {
