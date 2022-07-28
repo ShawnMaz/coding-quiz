@@ -51,9 +51,11 @@ var quizContent = [
     }
 ]
 
-var timePerQuestion = 20; // seconds
+var timePerQuestion = 10; // seconds
 
 var mainEl = document.querySelector("main");
+
+var headerEl = document.querySelector("#header-element");
 
 // create the section that will contain the quiz question and the multiple choices
 var sectionEl = document.createElement("section");
@@ -63,11 +65,19 @@ var questionNumber = 0;
 
 var userMark = []; // stores user score for each questions
 
-var timer = 0;
+var timer = quizContent.length * timePerQuestion;
 
 
 var clearPage = function(){
     document.querySelector(".page").remove();
+};
+
+var changeHeaderToTimer = function(){
+    headerEl.textContent = `Time: ${timer}`;
+};
+
+var changeHeaderToViewHighScore = function(){
+    headerEl.textContent = "View High Score";
 };
 
 var clearSectionEl = function(){
@@ -113,6 +123,7 @@ var createResults = function(){
                     spanEl.setAttribute("style", "background-color: green;");
                 }else{
                     spanEl.setAttribute("style", "background-color: red;");
+                    
                 }
             }
             
@@ -128,7 +139,7 @@ var createQuiz = function(){
 
     createResults();
 
-    mainEl.appendChild(sectionEl)
+    mainEl.appendChild(sectionEl);
 };
 
 var checkAnswer = function(userResponse){
@@ -136,10 +147,12 @@ var checkAnswer = function(userResponse){
         userMark.push("correct");
     }else{
         userMark.push("incorrect");
+        timer = ((timer - 10) > 0) ? timer -= 10 : timer = 0;
     }
 };
 
 var createScoreSubmissionPage = function(){
+    changeHeaderToViewHighScore();
     var headerEl = document.createElement("h2");
     headerEl.textContent = "All done";
     sectionEl.appendChild(headerEl);
@@ -169,27 +182,48 @@ var createScoreSubmissionPage = function(){
 
     mainEl.appendChild(sectionEl);
 };
-    
-var quiz = function(event){
 
+var startTimer;
+
+var quizTimer = function(){    
+    if(timer>0){
+        timer--;
+        changeHeaderToTimer();
+    }else{
+        changeHeaderToViewHighScore();
+        clearInterval(startTimer);
+        clearSectionEl();
+        createScoreSubmissionPage();
+    }
+};
+    
+var quiz = function(event){    
+    
     if(event.target.matches("#start-quiz")){
+        timer = quizContent.length * timePerQuestion;
+        // start timer
+        startTimer = setInterval(quizTimer, 1000);
+
         //remove main page
-        clearPage();
+        clearPage();       
 
         //create quiz page
         createQuiz();
+        
     }else if(event.target.matches(".question-options")){
         checkAnswer(event.target.textContent);
         questionNumber++;
-        if(questionNumber < quizContent.length){
+        if((questionNumber < quizContent.length) && timer > 0){
             clearSectionEl();
             createQuiz();
         }else{
             clearSectionEl();
+            clearInterval(startTimer);
+            console.log(timer);
             createScoreSubmissionPage();
         }
         
-    }
+    }   
     
 };
 
