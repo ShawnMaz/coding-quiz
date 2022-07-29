@@ -439,7 +439,8 @@ mainEl.addEventListener("click", quiz);
 // This function checkes what was clicked in the header element
 var headerHighScorePageNavigation = function (event) {
   var buttonClick = event.target;
-  if (buttonClick.matches("#header-element")) {
+  console.log(typeof(buttonClick.textContent));
+  if (buttonClick.matches("#header-element") && buttonClick.textContent === "View High Score") {
     if (score.length === 0) {
       clearSectionEl();
       // when the element is clicked but there is no high score to show,
