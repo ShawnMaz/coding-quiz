@@ -349,7 +349,7 @@ var createHomePage = function () {
   // creates quiz instructions paragraph
   var paragraphEl = document.createElement("p");
   paragraphEl.textContent =
-    "Try to answer the following code-realted questions within the time limit. keep in mind that incorrect answers will penalize your score/time by ten seconds!";
+    "Try to answer the following code-related questions within the time limit. keep in mind that incorrect answers will penalize your score/time by ten seconds!";
   sectionEl.appendChild(paragraphEl);
 
   // creates the start quiz button
@@ -359,7 +359,7 @@ var createHomePage = function () {
   sectionEl.appendChild(buttonEl);
 
   mainEl.appendChild(sectionEl);
-};
+};    
 
 // This function determines which click event will take you where and
 // calls the required helper functions to create the correct page
